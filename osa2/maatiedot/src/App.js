@@ -7,15 +7,6 @@ const FilterField = ({filter, handleFilterChange}) => {
   )
 }
 
-const CountryEntry = ({country}) => {
-  return (
-    <div>
-      {country.name.common} 
-      <button>show</button>
-    </div>
-  )
-}
-
 const CountryStats = ({country}) => {
   let langList = []
   
@@ -30,7 +21,7 @@ const CountryStats = ({country}) => {
       <h1>{country.name.common}</h1>
       <p>capital: {country.capital}</p>
       <p>area: {country.area}</p>
-      <h2>languages:</h2>
+        <h2>languages:</h2>
         <ul>
           {langList.map(lang =>
             <li key={lang}>{lang}</li>
@@ -41,7 +32,7 @@ const CountryStats = ({country}) => {
   )
 }
 
-const CountryList = ({countries}) => {
+const CountryList = ({countries, handleShowButton}) => {
   if (countries.length > 10) {
     return (
       <p>Too many matches</p>
@@ -50,8 +41,13 @@ const CountryList = ({countries}) => {
     return (
       <div>
         {countries.map(country =>
-          <CountryEntry key={country.name.common} country={country} />
-        )}
+          <div key={country.name.common}>
+            {country.name.common}
+            <button onClick={() => {
+              handleShowButton(country)
+          }}>show</button>
+          </div>
+                )}
     </div>
     )
   }
@@ -82,14 +78,18 @@ const App = () => {
     : countries.filter(country =>
       country.name.common.toLowerCase().includes(filter.toLowerCase()))
   
-  const handleFilterChange = (event) =>{
+  const handleFilterChange = (event) => {
     setFilter(event.target.value)
+  }
+  
+  const handleShowButton = (c) => {
+    setFilter(c.name.common)
   }
   
   return (
     <div>
       <FilterField filter={filter} handleFilterChange={handleFilterChange} />
-      <CountryList countries={countriesToShow} />
+      <CountryList countries={countriesToShow} handleShowButton={handleShowButton} />
     </div>
   )
 }
