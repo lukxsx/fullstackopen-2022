@@ -1,13 +1,39 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const FilterField = ({filter, handleFilterChange}) => {
   return (
     <input value={filter} onChange={handleFilterChange} />
   )
 }
 
+const Weather = ({weather}) => {
+  if (Object.keys(weather).length === 0) {
+    return (<div></div>)
+  }
+  
+  const icon_url = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png"
+  return (
+    <div>
+    <p>Temp: {weather.main.temp} °C</p>
+    <p>Wind: {weather.wind.speed} m/s</p>
+    <img src={icon_url} alt="weather icon" />
+    </div>
+  )
+}
+
 const CountryStats = ({country}) => {
+  const [weather, setWeather] = useState([])
+  useEffect(() => {
+    axios
+      .get("https://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + country.capitalInfo.latlng[0] + "&lon=" + country.capitalInfo.latlng[1] +"&appid=" + api_key)
+      .then(response => {
+        setWeather(response.data)
+    })
+  }, [])
+  
   let langList = []
   
   for (let key in country.languages) {
@@ -19,15 +45,17 @@ const CountryStats = ({country}) => {
   return (
     <div>
       <h1>{country.name.common}</h1>
-      <p>capital: {country.capital}</p>
-      <p>area: {country.area}</p>
-        <h2>languages:</h2>
+      <p>Capital: {country.capital}</p>
+      <p>Area: {country.area}</p>
+        <h2>Languages:</h2>
         <ul>
           {langList.map(lang =>
             <li key={lang}>{lang}</li>
             )}
         </ul>
-      <img src={country.flags.png} />
+      <img src={country.flags.png} alt="country flag" />
+      <h2>Weather in {country.capital[0]}</h2>
+      <Weather weather={weather} />
     </div>
   )
 }
