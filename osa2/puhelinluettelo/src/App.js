@@ -5,7 +5,7 @@ const Item = ({person, deleteButtonHandler}) => {
   return (
     <li key={person.name}>
     {person.name} {person.number}
-    <button onClick={() => deleteButtonHandler(person.id)}>Delete</button>
+    <button onClick={() => deleteButtonHandler(person)}>Delete</button>
     </li>
   )
 }
@@ -80,13 +80,15 @@ const App = () => {
     setNewNumber('')
   }
   
-  const handleDeleteButton = (id) => {
-    personService
-    .deletePerson(id)
-    .then(() => {
-      const newList = persons.filter(person => person.id !== id)
-      setPersons(newList)
-    })
+  const handleDeleteButton = (person) => {
+    if (window.confirm(`Remove person ${person.name}?`)) {
+      personService
+      .deletePerson(person.id)
+      .then(() => {
+        const newList = persons.filter(p => p.id !== person.id)
+        setPersons(newList)
+      })
+    }
   }
   
   const handleNameChange = (event) => {
