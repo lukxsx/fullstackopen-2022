@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Item = ({person}) => {
+const Item = ({person, deleteButtonHandler}) => {
   return (
-    <li key={person.name}>{person.name} {person.number}</li>
+    <li key={person.name}>
+    {person.name} {person.number}
+    <button onClick={() => deleteButtonHandler(person.id)}>Delete</button>
+    </li>
   )
 }
 
@@ -31,12 +34,12 @@ const FilterForm = ({filter, handleFilterChange}) => {
   )
 }
 
-const ItemList = ({persons}) => {
+const ItemList = ({persons, deleteButtonHandler}) => {
   return (
     <div>
       <ul>
         {persons.map(person =>
-          <Item key={person.name} person={person} />
+          <Item key={person.name} person={person} deleteButtonHandler={deleteButtonHandler}/>
         )}
       </ul>
     </div>
@@ -77,6 +80,15 @@ const App = () => {
     setNewNumber('')
   }
   
+  const handleDeleteButton = (id) => {
+    personService
+    .deletePerson(id)
+    .then(() => {
+      const newList = persons.filter(person => person.id !== id)
+      setPersons(newList)
+    })
+  }
+  
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -101,7 +113,7 @@ const App = () => {
       <AddForm addName={addName} newName={newName} handleNameChange={handleNameChange}
       newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <ItemList persons={namesToShow} />
+      <ItemList persons={namesToShow} deleteButtonHandler={handleDeleteButton}/>
     </div>
   )
 
