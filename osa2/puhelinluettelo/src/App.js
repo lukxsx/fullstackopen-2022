@@ -1,6 +1,25 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
+const Alert = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  
+  return (
+    <div style={
+      {
+        color: 'green',
+        borderStyle: 'solid',
+        borderRadius: 3,
+        padding: 10,
+      }
+    }>
+      {message}
+    </div>
+  )
+}
+
 const Item = ({person, deleteButtonHandler}) => {
   return (
     <li key={person.name}>
@@ -51,6 +70,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [alertMessage, setAlertMessage] = useState(null)
   
   useEffect(() => {
     personService
@@ -59,6 +79,13 @@ const App = () => {
       setPersons(initialPersons)
     })  
   }, [])
+  
+  const showMessage = message => {
+    setAlertMessage(message)
+    setTimeout(() => {
+      setAlertMessage(null)
+    }, 2500)
+  }
   
   const addName = (event) => {
     event.preventDefault()
@@ -71,6 +98,7 @@ const App = () => {
       .create(newPerson)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        showMessage(`Person ${newName} added!`)
       })
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -82,6 +110,7 @@ const App = () => {
         .modifyPerson(modifiedPerson)
         .then(() => {
           setPersons(persons.map(p => p.id === modifiedPerson.id ? modifiedPerson : p))
+          showMessage(`Person ${newName} updated!`)
         })
       }
         
@@ -97,6 +126,7 @@ const App = () => {
       .then(() => {
         const newList = persons.filter(p => p.id !== person.id)
         setPersons(newList)
+        showMessage(`Person ${person.name} deleted!`)
       })
     }
   }
@@ -119,6 +149,7 @@ const App = () => {
   
   return (
     <div>
+      <Alert message={alertMessage} />
       <h2>Phonebook</h2>
       <FilterForm filter={filter} handleFilterChange={handleFilterChange} />
       Add new
