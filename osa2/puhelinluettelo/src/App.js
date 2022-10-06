@@ -6,18 +6,33 @@ const Alert = ({ message }) => {
     return null
   }
   
-  return (
-    <div style={
-      {
-        color: 'green',
-        borderStyle: 'solid',
-        borderRadius: 3,
-        padding: 10,
-      }
-    }>
-      {message}
-    </div>
-  )
+  if (message.type === "error") {
+    return (
+      <div style={
+        {
+          color: 'red',
+          borderStyle: 'solid',
+          borderRadius: 3,
+          padding: 10,
+        }
+      }>
+        {message.text}
+      </div>
+    )
+  } else if (message.type === "alert") {
+    return (
+      <div style={
+        {
+          color: 'green',
+          borderStyle: 'solid',
+          borderRadius: 3,
+          padding: 10,
+        }
+      }>
+        {message.text}
+      </div>
+    )
+  }
 }
 
 const Item = ({person, deleteButtonHandler}) => {
@@ -81,7 +96,14 @@ const App = () => {
   }, [])
   
   const showMessage = message => {
-    setAlertMessage(message)
+    setAlertMessage({text: message, type: "alert"})
+    setTimeout(() => {
+      setAlertMessage(null)
+    }, 2500)
+  }
+  
+  const showError = message => {
+    setAlertMessage({text: message, type: "error"})
     setTimeout(() => {
       setAlertMessage(null)
     }, 2500)
@@ -111,6 +133,9 @@ const App = () => {
         .then(() => {
           setPersons(persons.map(p => p.id === modifiedPerson.id ? modifiedPerson : p))
           showMessage(`Person ${newName} updated!`)
+        })
+        .catch(error => {
+          showError(`Cannot modify, ${newName} is already removed from the server`)
         })
       }
         
