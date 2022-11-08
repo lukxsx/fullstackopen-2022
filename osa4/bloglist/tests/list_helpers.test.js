@@ -6,7 +6,7 @@ const blogs = [
         title: "React patterns",
         author: "Michael Chan",
         url: "https://reactpatterns.com/",
-        likes: 7,
+        likes: 5,
         __v: 0
     },
     {
@@ -61,16 +61,34 @@ test('dummy returns one', () => {
 describe('total likes', () => {
     test('when list has only one blog equals the likes of that', () => {
         const result = listHelper.totalLikes([blogs[0]])
-        expect(result).toBe(7)
+        expect(result).toBe(5)
     })
 
     test('total likes equals likes of all posts', () => {
         const result = listHelper.totalLikes(blogs)
-        expect(result).toBe(36)
+        expect(result).toBe(34)
     })
 
     test('total likes of list of zero items equals 0', () => {
         const result = listHelper.totalLikes([])
         expect(result).toBe(0)
     })
+})
+
+describe('favorite blogs', () => {
+    test('most likes of all blogs', () => {
+        const result = listHelper.favoriteBlog(blogs)
+        expect(result).toEqual(blogs[2])
+    })
+
+    test('favorite from empty list should be none', () => {
+        const result = listHelper.favoriteBlog([])
+        expect(result).toEqual(null)
+    })
+
+    test('when there are two best, either of them is ok', () => {
+        const result = listHelper.favoriteBlog([blogs[0], blogs[1]])
+        expect(result).toEqual(blogs[0] || blogs[1])
+    })
+
 })
