@@ -1,4 +1,6 @@
+const matchers = require('jest-extended')
 const listHelper = require('../utils/list_helper')
+expect.extend(matchers)
 
 const blogs = [
     {
@@ -88,7 +90,7 @@ describe('favorite blogs', () => {
 
     test('when there are two best, either of them is ok', () => {
         const result = listHelper.favoriteBlog([blogs[0], blogs[1]])
-        expect(result).toEqual(blogs[0] || blogs[1])
+        expect(result).toBeOneOf([blogs[0], blogs[1]])
     })
 })
 
@@ -105,6 +107,23 @@ describe('most blogs', () => {
 
     test('test when two authors have same amount of posts', () => {
         const result = listHelper.mostBlogs([blogs[1], blogs[2], blogs[3], blogs[4]])
-        expect(result).toEqual("Edsger W. Dijkstra" || "Robert C. Martin")
+        expect(result).toBeOneOf(["Edsger W. Dijkstra", "Robert C. Martin"])
+    })
+})
+
+describe('most likes', () => {
+    test('who has most likes', () => {
+        const result = listHelper.mostLikes(blogs)
+        expect(result).toEqual("Edsger W. Dijkstra")
+    })
+
+    test('empty list should return nothing', () => {
+        const result = listHelper.mostLikes([])
+        expect(result).toEqual(null)
+    })
+
+    test('if two have same amount of likes, return either one', () => {
+        const result = listHelper.mostLikes([blogs[0], blogs[1]])
+        expect(result).toBeOneOf(["Michael Chan", "Edsger W. Dijkstra"])
     })
 })

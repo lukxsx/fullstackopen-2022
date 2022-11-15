@@ -29,9 +29,27 @@ const mostBlogs = (blogs) => {
         .maxBy(_.last))
 }
 
+const mostLikes = (blogs) => {
+    if (blogs == null || blogs.length == 0) {
+        return null
+    }
+    let authors = [...new Set(blogs.map(x => {
+        return ({
+            author: x.author,
+            likes: blogs.filter(b => b.author === x.author)
+                .map(x => x.likes)
+                .reduce((sum, a) => sum + a, 0)
+        })}
+    ))]
+
+    return authors.sort((a, b) => (a.likes < b.likes) ? 1 : -1)[0].author
+
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
