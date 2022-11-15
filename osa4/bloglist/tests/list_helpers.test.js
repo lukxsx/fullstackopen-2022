@@ -90,5 +90,21 @@ describe('favorite blogs', () => {
         const result = listHelper.favoriteBlog([blogs[0], blogs[1]])
         expect(result).toEqual(blogs[0] || blogs[1])
     })
+})
 
+describe('most blogs', () => {
+    test('find out who has created most blog posts', () => {
+        const result = listHelper.mostBlogs(blogs)
+        expect(result).toEqual("Robert C. Martin")
+    })
+
+    test('test with empty list', () => {
+        const result = listHelper.mostBlogs([])
+        expect(result).toEqual(null)
+    })
+
+    test('test when two authors have same amount of posts', () => {
+        const result = listHelper.mostBlogs([blogs[1], blogs[2], blogs[3], blogs[4]])
+        expect(result).toEqual("Edsger W. Dijkstra" || "Robert C. Martin")
+    })
 })
