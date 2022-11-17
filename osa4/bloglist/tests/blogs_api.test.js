@@ -36,6 +36,26 @@ describe('getting blog entries', () => {
   })
 })
 
+describe('adding blog entries', () => {
+  const newEntry = {
+    title: 'test blog post',
+    author: 'mr. testing',
+    likes: 4
+  }
+
+  test('blog list increases by one when new one is added', async () => {
+    await api.post('/api/blogs').send(newEntry).expect(201).expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  })
+
+  test('new blog has the right title', async () => {
+    await api.post('/api/blogs').send(newEntry).expect(201).expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
+    expect(response.body.map(r => r.title)).toContain('test blog post')
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
