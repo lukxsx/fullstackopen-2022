@@ -54,6 +54,13 @@ describe('adding blog entries', () => {
     const response = await api.get('/api/blogs')
     expect(response.body.map(r => r.title)).toContain('test blog post')
   })
+
+  test('likes value will be 0 if no likes are given', async () => {
+    const { likes, ...blogWithoutLikes } = newEntry
+    const response = await api.post('/api/blogs')
+      .send(blogWithoutLikes).expect(201).expect('Content-Type', /application\/json/)
+    expect(response.body.likes).toBe(0)
+  })
 })
 
 afterAll(() => {
