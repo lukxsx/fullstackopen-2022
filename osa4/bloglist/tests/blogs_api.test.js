@@ -17,12 +17,12 @@ describe('getting blog entries', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
-  
+
   test('api returns correct amount of blogs', async () => {
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
-  
+
   test('specific blog is included in the response', async () => {
     const response = await api.get('/api/blogs')
     expect(response.body.map(r => r.title)).toContain('TDD harms architecture')
@@ -40,6 +40,7 @@ describe('adding blog entries', () => {
   const newEntry = {
     title: 'test blog post',
     author: 'mr. testing',
+    url: 'http://testi.com',
     likes: 4
   }
 
@@ -60,6 +61,24 @@ describe('adding blog entries', () => {
     const response = await api.post('/api/blogs')
       .send(blogWithoutLikes).expect(201).expect('Content-Type', /application\/json/)
     expect(response.body.likes).toBe(0)
+  })
+
+  test('return 400 if title is missing', async () => {
+    const { title, ...blogWithoutTitle } = newEntry
+    const response = await api.post('/api/blogs')
+      .send(blogWithoutTitle).expect(400)
+  })
+
+  test('return 400 if url missing', async () => {
+    const { url, ...blogWithoutUrl } = newEntry
+    const response = await api.post('/api/blogs')
+      .send(blogWithoutUrl).expect(400)
+  })
+
+  test('return 400 if both title and url missing', async () => {
+    const { title, url, ...blogWithoutFields } = newEntry
+    const response = await api.post('/api/blogs')
+      .send(blogWithoutFields).expect(400)
   })
 })
 
