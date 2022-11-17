@@ -27,6 +27,13 @@ describe('getting blog entries', () => {
     const response = await api.get('/api/blogs')
     expect(response.body.map(r => r.title)).toContain('TDD harms architecture')
   })
+
+  test('blog entries should be identified by field _id', async () => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(r => {
+      expect(r.id).toBeDefined()
+    })
+  })
 })
 
 afterAll(() => {
