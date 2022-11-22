@@ -82,6 +82,29 @@ describe('adding blog entries', () => {
   })
 })
 
+describe('deleting blog entries', () => {
+  test('return 400 then trying to delete non-existent blog post', async () => {
+    const response = await api.delete('/api/blogs/doesnotexist')
+      .expect(400)
+  })
+
+  test('blog list length decreases by one when blog is deleted', async () => {
+    const blogsBefore = await api.get('/api/blogs')
+    const deleteResponse = await api.delete(`/api/blogs/${blogsBefore.body[0].id}`)
+      .expect(204)
+    const blogsAfter = await api.get('/api/blogs')
+    expect(blogsAfter.body).toHaveLength(blogsBefore.body.length - 1)
+  })
+
+  test('after deleting blog, it cannot be found from the bloglist return', async () => {
+    const blogsBefore = await api.get('/api/blogs').expect(200)
+    const deletion = await api.delete(`/api/blogs/${blogsBefore.body[0].id}`)
+      .expect(204)
+  const blogsAfter = await api.get('/api/blogs')
+    expect(blogsAfter.body.map(r => r.title)).not.toContain('React patterns')
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
