@@ -1,9 +1,19 @@
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
-    username: String,
-    name: String,
-    hash: String
+    username: {
+        type: String,
+        minlength: 3,
+        required: [true, 'username cannot be empty']
+    },
+    name: {
+        type: String,
+        required: [true, 'name cannot be empty']
+    },
+    hash: {
+        type: String,
+        required: [true, 'hash is needed']
+    }
 })
 
 userSchema.set('toJSON', {
