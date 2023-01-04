@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
-const User = require('../models/user')
+const middleware = require('../middleware')
 
 const extractToken = request => {
   const auth = request.get('authorization')
@@ -20,40 +20,28 @@ blogRouter.get("/", async (request, response) => {
   response.json(blogs)
 })
 
-blogRouter.post("/", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-  const blogUser = await User.findById(decodedToken.id)
-
+blogRouter.post("/", middleware.userExtractor, async (request, response) => {
   const blog = new Blog({
     title: request.body.title,
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes || 0,
-    user: blogUser._id
+    user: request.user._id
   })
 
   const savedBlog = await blog.save()
 
-  blogUser.blogs = blogUser.blogs.concat(savedBlog._id)
-  await blogUser.save()
+  request.user.blogs = request.user.blogs.concat(savedBlog._id)
+  await request.user.save()
 
   response.status(201).json(savedBlog)
 })
 
-blogRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-  const blogUser = await User.findById(decodedToken.id)
-
+blogRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const blogToDelete = await Blog.findById(request.params.id)
   if (blogToDelete) {
-    if (blogToDelete.user.toString() !== blogUser.id.toString()) {
-      return response.status(400).json({ error: 'you don\'t have rights to delete this blog'})
+    if (blogToDelete.user.toString() !== request.user._id.toString()) {
+      return response.status(401).json({ error: 'you don\'t have rights to delete this blog'})
     }
     await Blog.deleteOne(blogToDelete)
   } else {
