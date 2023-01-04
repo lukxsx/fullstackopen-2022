@@ -1,5 +1,11 @@
 const logger = require('./utils/logger')
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({
+    error: 'unknown endpoint'
+  })
+}
+
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message)
   if (error.name === 'CastError') {
@@ -12,5 +18,6 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
-  errorHandler
+  errorHandler,
+  unknownEndpoint
 }
