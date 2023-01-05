@@ -32,7 +32,6 @@ usersRouter.post('/', async (request, response) => {
     }
 
     const hash = await bcrypt.hash(password, 10)
-
     const user = new User({
         username,
         name,
