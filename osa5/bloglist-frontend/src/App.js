@@ -56,8 +56,10 @@ const App = () => {
   }
 
   const addLike = async (blog) => {
+    console.log(blog)
     try {
       const updatedBlog = await blogService.addLike({ ...blog, likes: blog.likes + 1 })
+      console.log(updatedBlog)
       setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
     } catch (exception) {
       setWarning(true)
