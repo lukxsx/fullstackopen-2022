@@ -1,35 +1,21 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
-import Notification from './Notification'
 
-const NewBlogForm = ({ blogs, setBlogs }) => {
+const NewBlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const [notifMessage, setNotifMessage] = useState(null)
-  const [warning, setWarning] = useState(false)
 
   const addBlog = async (event) => {
     event.preventDefault()
-    try {
-      const newBlog = await blogService.addBlog({ title: title, author: author, url: url })
-      setBlogs(blogs.concat(newBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setNotifMessage(`A new blog ${newBlog.title} added!`)
-      setTimeout(() => { setNotifMessage(null) }, 5000)
-    } catch (exception) {
-      setWarning(true)
-      setNotifMessage('Error adding blog')
-      setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
-    }
+    await createBlog({ title: title, author: author, url: url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
       <>
         <h3>Add blog</h3>
-        <Notification warning={warning} message={notifMessage} />
         <form onSubmit={addBlog}>
           <div>
             <label>Title: </label>
