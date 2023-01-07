@@ -95,7 +95,9 @@ const App = () => {
         <button onClick={() => { window.localStorage.clear(); setUser(null) }}>Logout</button>
       </div>
       <h2>Blogs</h2>
-      {blogs.map(blog =>
+      {blogs
+        .sort((a, b) => (a.likes > b.likes) ? -1 : 1)
+        .map(blog =>
         <Blog key={blog.id} blog={blog} addLike={addLike} />
       )}
       {newBlogForm()}
