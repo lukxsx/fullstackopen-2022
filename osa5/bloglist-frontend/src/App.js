@@ -26,6 +26,7 @@ const App = () => {
     if (userData) {
       const user = JSON.parse(userData)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -56,14 +57,23 @@ const App = () => {
   }
 
   const addLike = async (blog) => {
-    console.log(blog)
     try {
       const updatedBlog = await blogService.addLike({ ...blog, likes: blog.likes + 1 })
-      console.log(updatedBlog)
       setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
     } catch (exception) {
       setWarning(true)
       setNotifMessage('Error adding like')
+      setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
+    }
+  }
+
+  const deleteBlog = async (blog) => {
+    try {
+      await blogService.deleteBlog(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    } catch (exception) {
+      setWarning(true)
+      setNotifMessage('Error deleting blog')
       setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
     }
   }
@@ -98,7 +108,13 @@ const App = () => {
       {blogs
         .sort((a, b) => (a.likes > b.likes) ? -1 : 1)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          addLike={addLike}
+          deleteBlog={deleteBlog}
+          user={user}
+        />
       )}
       {newBlogForm()}
     </div>

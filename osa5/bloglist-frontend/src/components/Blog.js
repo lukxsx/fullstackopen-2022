@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,6 +21,9 @@ const Blog = ({ blog, addLike }) => {
           <p>{blog.url}</p>
           <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>Like!</button></p>
           <p>{blog.user.name}</p>
+          {(blog.user.username === user.username) && (<button onClick={() => {
+            if (window.confirm(`Are you sure? Removing blog ${blog.title}`)) deleteBlog(blog)
+          }}>Delete</button>)}
         </div>
       )}
     </div>
