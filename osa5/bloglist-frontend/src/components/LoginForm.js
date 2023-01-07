@@ -15,12 +15,10 @@ const LoginForm = ({ setUser }) => {
             })
             window.localStorage.setItem('userData', JSON.stringify(user))
             setUser(user)
-            console.log(user)
             blogService.setToken(user.token)
             setUsername('')
             setPassword('')
         } catch (exception) {
-            console.log(exception)
             alert('Invalid username or password')
             setUsername('')
             setPassword('')
