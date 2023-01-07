@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import Togglable from "./Togglable";
 
 const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const blogStyle = {

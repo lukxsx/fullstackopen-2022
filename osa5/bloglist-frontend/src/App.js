@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -30,18 +30,18 @@ const App = () => {
     }
   }, [])
 
-    const createBlog = async (blog) => {
-      try {
-        const newBlog = await blogService.addBlog(blog)
-        setBlogs(blogs.concat(newBlog))
-        setNotifMessage(`A new blog ${newBlog.title} added!`)
-        setTimeout(() => { setNotifMessage(null) }, 5000)
-      } catch (exception) {
-        setWarning(true)
-        setNotifMessage('Error adding blog')
-        setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
-      }
+  const createBlog = async (blog) => {
+    try {
+      const newBlog = await blogService.addBlog(blog)
+      setBlogs(blogs.concat(newBlog))
+      setNotifMessage(`A new blog ${newBlog.title} added!`)
+      setTimeout(() => { setNotifMessage(null) }, 5000)
+    } catch (exception) {
+      setWarning(true)
+      setNotifMessage('Error adding blog')
+      setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
     }
+  }
 
   const doLogin = async (loginUser) => {
     try {
@@ -79,11 +79,11 @@ const App = () => {
   }
 
   const blogFormRef = useRef()
-    const newBlogForm = () => (
-        <Togglable buttonLabel='New blog' ref={blogFormRef}>
-          <NewBlogForm createBlog={createBlog} />
-        </Togglable>
-    )
+  const newBlogForm = () => (
+    <Togglable buttonLabel='New blog' ref={blogFormRef}>
+      <NewBlogForm createBlog={createBlog} />
+    </Togglable>
+  )
 
 
   if (user === null) {
@@ -93,7 +93,7 @@ const App = () => {
         <LoginForm doLogin={doLogin} />
       </>
     )
-}
+  }
 
   return (
     <div>
@@ -108,14 +108,14 @@ const App = () => {
       {blogs
         .sort((a, b) => (a.likes > b.likes) ? -1 : 1)
         .map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          addLike={addLike}
-          deleteBlog={deleteBlog}
-          user={user}
-        />
-      )}
+          <Blog
+            key={blog.id}
+            blog={blog}
+            addLike={addLike}
+            deleteBlog={deleteBlog}
+            user={user}
+          />
+        )}
       {newBlogForm()}
     </div>
   )
