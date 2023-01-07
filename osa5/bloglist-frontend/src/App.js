@@ -55,6 +55,17 @@ const App = () => {
     }
   }
 
+  const addLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.addLike({ ...blog, likes: blog.likes + 1 })
+      setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    } catch (exception) {
+      setWarning(true)
+      setNotifMessage('Error adding like')
+      setTimeout(() => { setNotifMessage(null); setWarning(false) }, 5000)
+    }
+  }
+
   const blogFormRef = useRef()
     const newBlogForm = () => (
         <Togglable buttonLabel='New blog' ref={blogFormRef}>
@@ -83,7 +94,7 @@ const App = () => {
       </div>
       <h2>Blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       )}
       {newBlogForm()}
     </div>
