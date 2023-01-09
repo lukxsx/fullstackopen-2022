@@ -4,6 +4,7 @@ const Notification = ({ message, warning }) => {
   if (message !== null) {
     return (
       <div
+        className="notification"
         style={{
           border: warning ? 'solid red' : 'solid green',
           color: warning ? 'red' : 'green',
