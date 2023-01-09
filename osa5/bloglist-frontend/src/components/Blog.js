@@ -13,7 +13,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const [showAll, setShowAll] = useState(false)
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {blog.title} {blog.author} {' '}
       <button onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</button>
       {showAll && (
