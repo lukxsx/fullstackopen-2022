@@ -13,19 +13,19 @@ beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
   const hash = await bcrypt.hash('password', 10)
-  const user = new User({ name: "Tester", username: 'testuser', hash: hash })
+  const user = new User({ name: 'Tester', username: 'testuser', hash: hash })
   const userBlogs = helper.initialBlogs.map(x => ({...x, user: user._id}))
   await Blog.insertMany(userBlogs)
   user.blogs = userBlogs.map(x => x._id)
   await user.save()
 
   const response = await api
-      .post('/api/login')
-      .send({
-        username: 'testuser',
-        password: 'password'
-      })
-      .expect(200)
+    .post('/api/login')
+    .send({
+      username: 'testuser',
+      password: 'password'
+    })
+    .expect(200)
   authHeader = {
     Authorization: `Bearer ${response.body.token}`
   }
@@ -67,19 +67,19 @@ describe('adding blog entries', () => {
 
   test('cannot add blog without token', async () => {
     await api.post('/api/blogs')
-        .send(newEntry)
-        .expect(401)
-        .expect('Content-Type', /application\/json/)
+      .send(newEntry)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
   test('blog list increases by one when new one is added', async () => {
     await api.post('/api/blogs')
-        .set(authHeader)
-        .send(newEntry)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+      .set(authHeader)
+      .send(newEntry)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
   })
@@ -93,25 +93,25 @@ describe('adding blog entries', () => {
   test('likes value will be 0 if no likes are given', async () => {
     const { likes, ...blogWithoutLikes } = newEntry
     const response = await api.post('/api/blogs')
-        .set(authHeader)
-        .send(blogWithoutLikes)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+      .set(authHeader)
+      .send(blogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
     expect(response.body.likes).toBe(0)
   })
 
   test('return 400 if title is missing', async () => {
     const { title, ...blogWithoutTitle } = newEntry
     const response = await api.post('/api/blogs')
-        .set(authHeader)
-        .send(blogWithoutTitle).expect(400)
+      .set(authHeader)
+      .send(blogWithoutTitle).expect(400)
   })
 
   test('return 400 if url missing', async () => {
     const { url, ...blogWithoutUrl } = newEntry
     const response = await api.post('/api/blogs')
-        .set(authHeader)
-        .send(blogWithoutUrl).expect(400)
+      .set(authHeader)
+      .send(blogWithoutUrl).expect(400)
   })
 
   test('return 400 if both title and url missing', async () => {
@@ -139,7 +139,7 @@ describe('deleting blog entries', () => {
     const blogsBefore = await api.get('/api/blogs').expect(200)
     const deletion = await api.delete(`/api/blogs/${blogsBefore.body[0].id}`).set(authHeader)
       .expect(204)
-  const blogsAfter = await api.get('/api/blogs')
+    const blogsAfter = await api.get('/api/blogs')
     expect(blogsAfter.body.map(r => r.title)).not.toContain('React patterns')
   })
 })
@@ -150,6 +150,7 @@ describe('edit blogs', () => {
     const blogToModify = { title: 'edited title' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
       .send(blogToModify)
+      .set(authHeader)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.title)).toContain('edited title')
@@ -160,6 +161,7 @@ describe('edit blogs', () => {
     const blogToModify = { author: 'edited author' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
       .send(blogToModify)
+      .set(authHeader)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.author)).toContain('edited author')
@@ -170,6 +172,7 @@ describe('edit blogs', () => {
     const blogToModify = { url: 'http://google.com' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
       .send(blogToModify)
+      .set(authHeader)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.url)).toContain('http://google.com')
@@ -180,6 +183,7 @@ describe('edit blogs', () => {
     const blogToModify = { likes: 9000 }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
       .send(blogToModify)
+      .set(authHeader)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.likes)).toContain(9000)

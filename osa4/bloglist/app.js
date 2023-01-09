@@ -11,7 +11,7 @@ const loginRouter = require('./controllers/login')
 const middleware = require('./middleware')
 
 mongoose.connect(config.MONGODB_URI).then(() => {
-  logger.info("Connected to MongoDB")
+  logger.info('Connected to MongoDB')
 }).catch(error => logger.error(error.message))
 
 app.use(cors())

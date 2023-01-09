@@ -11,7 +11,7 @@ const extractToken = request => {
   return null
 }
 
-blogRouter.get("/", async (request, response) => {
+blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', {
     username: 1,
     name: 1,
@@ -20,7 +20,7 @@ blogRouter.get("/", async (request, response) => {
   response.json(blogs)
 })
 
-blogRouter.post("/", middleware.userExtractor, async (request, response) => {
+blogRouter.post('/', middleware.userExtractor, async (request, response) => {
   const blog = new Blog({
     title: request.body.title,
     author: request.body.author,
