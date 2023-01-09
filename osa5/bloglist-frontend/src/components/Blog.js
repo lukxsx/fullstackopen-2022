@@ -28,7 +28,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
             id="like-button"
           >Like!</button></p>
           <p>{blog.user.name}</p>
-          {(blog.user.username === user.username) && (<button onClick={() => {
+          {(blog.user.username === user.username) && (<button id="delete-button" onClick={() => {
             if (window.confirm(`Are you sure? Removing blog ${blog.title}`)) deleteBlog(blog)
           }}>Delete</button>)}
         </div>
