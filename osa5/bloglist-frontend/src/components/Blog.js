@@ -15,11 +15,18 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   return (
     <div className="blog" style={blogStyle}>
       {blog.title} {blog.author} {' '}
-      <button onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</button>
+      <button
+        id="show-button"
+        onClick={() => setShowAll(!showAll)}>
+        {showAll ? 'hide' : 'show'}
+      </button>
       {showAll && (
         <div>
           <p>{blog.url}</p>
-          <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>Like!</button></p>
+          <p>Likes: {blog.likes} <button
+            onClick={() => addLike(blog)}
+            id="like-button"
+          >Like!</button></p>
           <p>{blog.user.name}</p>
           {(blog.user.username === user.username) && (<button onClick={() => {
             if (window.confirm(`Are you sure? Removing blog ${blog.title}`)) deleteBlog(blog)
