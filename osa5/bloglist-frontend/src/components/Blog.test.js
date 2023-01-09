@@ -48,4 +48,14 @@ describe('blog post tests', () => {
     expect(container.innerHTML).toContain('http://google.com')
     expect(container.innerHTML).toContain('22')
   })
+
+  test('like adding handler is called when like button is clicked', async () => {
+    const user = userEvent.setup()
+    const showButton = screen.getByText('show')
+    await user.click(showButton)
+    const likeButton = screen.getByText('Like!')
+    await user.click(likeButton)
+    await user.click(likeButton)
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
