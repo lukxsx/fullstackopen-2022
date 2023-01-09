@@ -1,28 +1,51 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 
-test('renders content', () => {
-  const blog = {
-    title: 'Test title',
-    author: 'Test author',
-    url: 'http://google.com',
-    likes: 22
-  }
+const blogUser = {
+  username: 'testuser',
+  name: 'Tester'
+}
 
-  const user = {
-    username: 'testuser',
-    name: 'Tester'
-  }
+const blog = {
+  title: 'Test title',
+  author: 'Test author',
+  url: 'http://google.com',
+  likes: 22,
+  user: blogUser
+}
 
-  const mockHandler = jest.fn()
+let container
+let mockHandler
 
-  const { container } = render(<Blog blog={blog} addLike={mockHandler} deleteBlog={mockHandler} user={user} />)
+describe('blog post tests', () => {
+  beforeEach(() => {
+    mockHandler = jest.fn()
+    container = render(<Blog
+      blog={blog}
+      user={blogUser}
+      addLike={mockHandler}
+      deleteBlog={mockHandler
+      }/>
+    ).container
+  })
 
-  const div = container.querySelector('.blog')
-  expect(div).toHaveTextContent('Test title')
-  expect(div).toHaveTextContent('Test author')
-  expect(div).not.toHaveTextContent('http://google.com')
-  expect(div).not.toHaveTextContent('22')
+  test('render title and author, but not url and likes', () => {
+    expect(container.innerHTML).toContain('Test title')
+    expect(container.innerHTML).toContain('Test author')
+    expect(container.innerHTML).not.toContain('http://google.com')
+    expect(container.innerHTML).not.toContain('22')
+  })
+
+  test('render url and likes when show is clicked', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('show')
+    await user.click(button)
+    expect(container.innerHTML).toContain('Test title')
+    expect(container.innerHTML).toContain('Test author')
+    expect(container.innerHTML).toContain('http://google.com')
+    expect(container.innerHTML).toContain('22')
+  })
 })
