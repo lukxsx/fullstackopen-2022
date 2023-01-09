@@ -149,8 +149,8 @@ describe('edit blogs', () => {
     const blogsBefore = await api.get('/api/blogs').expect(200)
     const blogToModify = { title: 'edited title' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
-      .send(blogToModify)
       .set(authHeader)
+      .send(blogToModify)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.title)).toContain('edited title')
@@ -160,8 +160,8 @@ describe('edit blogs', () => {
     const blogsBefore = await api.get('/api/blogs').expect(200)
     const blogToModify = { author: 'edited author' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
-      .send(blogToModify)
       .set(authHeader)
+      .send(blogToModify)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.author)).toContain('edited author')
@@ -171,8 +171,8 @@ describe('edit blogs', () => {
     const blogsBefore = await api.get('/api/blogs').expect(200)
     const blogToModify = { url: 'http://google.com' }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
-      .send(blogToModify)
       .set(authHeader)
+      .send(blogToModify)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.url)).toContain('http://google.com')
@@ -182,8 +182,8 @@ describe('edit blogs', () => {
     const blogsBefore = await api.get('/api/blogs').expect(200)
     const blogToModify = { likes: 9000 }
     const update = await api.put(`/api/blogs/${blogsBefore.body[0].id}`)
-      .send(blogToModify)
       .set(authHeader)
+      .send(blogToModify)
       .expect(200)
     const blogsAfter = await api.get('/api/blogs').expect(200)
     expect(blogsAfter.body.map(r => r.likes)).toContain(9000)
