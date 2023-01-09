@@ -87,6 +87,48 @@ describe('Blog app', function() {
         cy.get('#delete-button').should('not.exist')
       })
     })
+
+    describe('Multiple blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'Eka',
+          author: 'asd',
+          url: 'www.example.com'
+        })
+        cy.createBlog({
+          title: 'Toka',
+          author: 'sdf',
+          url: 'www.example.fi'
+        })
+        cy.createBlog({
+          title: 'Kolmas',
+          author: 'qwerty',
+          url: 'www.example.net'
+        })
+      })
+
+      it.only('Blogs are shown in correct order', function() {
+        cy.contains('Eka').contains('show').click()
+        cy.contains('Like!').click()
+        cy.contains('Eka').contains('hide').click()
+        cy.contains('Toka').contains('show').click()
+        cy.contains('Like!').click()
+        cy.wait(500)
+        cy.contains('Like!').click()
+        cy.contains('Toka').contains('hide').click()
+        cy.contains('Kolmas').contains('show').click()
+        cy.contains('Like!').click()
+        cy.wait(500)
+        cy.contains('Like!').click()
+        cy.wait(500)
+        cy.contains('Like!').click()
+        cy.contains('Kolmas').contains('hide').click()
+
+        cy.get('.blog').eq(0).should('contain', 'Kolmas')
+        cy.get('.blog').eq(1).should('contain', 'Toka')
+        cy.get('.blog').eq(2).should('contain', 'Eka')
+      })
+    })
   })
 })
 

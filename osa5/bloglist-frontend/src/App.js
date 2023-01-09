@@ -107,9 +107,10 @@ const App = () => {
       <h2>Blogs</h2>
       {blogs
         .sort((a, b) => (a.likes > b.likes) ? -1 : 1)
-        .map(blog =>
+        .map((blog, idx) =>
           <Blog
             key={blog.id}
+            index={idx}
             blog={blog}
             addLike={addLike}
             deleteBlog={deleteBlog}
