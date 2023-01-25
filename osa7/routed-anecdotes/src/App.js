@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Routes, Route, Link, useMatch
+  Routes, Route, Link, useMatch, useNavigate
 } from "react-router-dom"
 
 
@@ -64,6 +64,7 @@ const CreateNew = (props) => {
   const [info, setInfo] = useState('')
 
 
+
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -98,6 +99,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  const navigate = useNavigate()
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -123,6 +125,9 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate('/')
+    setNotification(`New anecdote ${anecdote.content} added!`)
+    setTimeout(() => setNotification(''), 5000)
   }
 
   const anecdoteById = (id) =>
@@ -143,6 +148,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <p style={{ visibility: notification.length === 0 ? "hidden" : "visible"}}>{notification}</p>
     
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
