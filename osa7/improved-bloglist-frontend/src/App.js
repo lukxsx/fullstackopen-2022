@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setNotification } from "../reducers/notificationReducer";
+import { setNotification } from "./reducers/notificationReducer";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -33,22 +33,11 @@ const App = () => {
       const newBlog = await blogService.addBlog(blog);
       setBlogs(blogs.concat(newBlog));
       dispatch(
-        setNotification({
-          message: `A new blog ${newBlog.title} added!`,
-          warning: false,
-        })
+        setNotification(`A new blog ${newBlog.title} added!`, 5000, false)
       );
-      //setNotifMessage(`A new blog ${newBlog.title} added!`);
-      //setTimeout(() => {
-      //  setNotifMessage(null);
-      //}, 5000);
+      setTimeout(() => dispatch(setNotification(``)), 5000);
     } catch (exception) {
-      //setWarning(true);
-      //setNotifMessage("Error adding blog");
-      //setTimeout(() => {
-      //  setNotifMessage(null);
-      //  setWarning(false);
-      //}, 5000);
+      dispatch(setNotification("Error adding blog", 5000, true));
     }
   };
 
@@ -59,12 +48,7 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     } catch (exception) {
-      //setWarning(true);
-      //setNotifMessage("Invalid username or password");
-      //setTimeout(() => {
-      //  setNotifMessage(null);
-      //  setWarning(false);
-      //}, 5000);
+      dispatch(setNotification("Invalid username or password", 5000, true));
     }
   };
 
@@ -76,12 +60,7 @@ const App = () => {
       });
       setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
     } catch (exception) {
-      //setWarning(true);
-      //setNotifMessage("Error adding like");
-      //setTimeout(() => {
-      //  setNotifMessage(null);
-      //  setWarning(false);
-      //}, 5000);
+      dispatch(setNotification("Error adding like", 5000, true));
     }
   };
 
@@ -90,12 +69,7 @@ const App = () => {
       await blogService.deleteBlog(blog);
       setBlogs(blogs.filter((b) => b.id !== blog.id));
     } catch (exception) {
-      //setWarning(true);
-      //setNotifMessage("Error deleting blog");
-      //setTimeout(() => {
-      //  setNotifMessage(null);
-      //  setWarning(false);
-      //}, 5000);
+      dispatch(setNotification("Error deleting blog", 5000, true));
     }
   };
 
