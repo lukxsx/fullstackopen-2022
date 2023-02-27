@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -11,8 +13,7 @@ import NewBlogForm from "./components/NewBlogForm";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [warning, setWarning] = useState(false);
-  const [notifMessage, setNotifMessage] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -31,17 +32,23 @@ const App = () => {
     try {
       const newBlog = await blogService.addBlog(blog);
       setBlogs(blogs.concat(newBlog));
-      setNotifMessage(`A new blog ${newBlog.title} added!`);
-      setTimeout(() => {
-        setNotifMessage(null);
-      }, 5000);
+      dispatch(
+        setNotification({
+          message: `A new blog ${newBlog.title} added!`,
+          warning: false,
+        })
+      );
+      //setNotifMessage(`A new blog ${newBlog.title} added!`);
+      //setTimeout(() => {
+      //  setNotifMessage(null);
+      //}, 5000);
     } catch (exception) {
-      setWarning(true);
-      setNotifMessage("Error adding blog");
-      setTimeout(() => {
-        setNotifMessage(null);
-        setWarning(false);
-      }, 5000);
+      //setWarning(true);
+      //setNotifMessage("Error adding blog");
+      //setTimeout(() => {
+      //  setNotifMessage(null);
+      //  setWarning(false);
+      //}, 5000);
     }
   };
 
@@ -52,12 +59,12 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     } catch (exception) {
-      setWarning(true);
-      setNotifMessage("Invalid username or password");
-      setTimeout(() => {
-        setNotifMessage(null);
-        setWarning(false);
-      }, 5000);
+      //setWarning(true);
+      //setNotifMessage("Invalid username or password");
+      //setTimeout(() => {
+      //  setNotifMessage(null);
+      //  setWarning(false);
+      //}, 5000);
     }
   };
 
@@ -69,12 +76,12 @@ const App = () => {
       });
       setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
     } catch (exception) {
-      setWarning(true);
-      setNotifMessage("Error adding like");
-      setTimeout(() => {
-        setNotifMessage(null);
-        setWarning(false);
-      }, 5000);
+      //setWarning(true);
+      //setNotifMessage("Error adding like");
+      //setTimeout(() => {
+      //  setNotifMessage(null);
+      //  setWarning(false);
+      //}, 5000);
     }
   };
 
@@ -83,12 +90,12 @@ const App = () => {
       await blogService.deleteBlog(blog);
       setBlogs(blogs.filter((b) => b.id !== blog.id));
     } catch (exception) {
-      setWarning(true);
-      setNotifMessage("Error deleting blog");
-      setTimeout(() => {
-        setNotifMessage(null);
-        setWarning(false);
-      }, 5000);
+      //setWarning(true);
+      //setNotifMessage("Error deleting blog");
+      //setTimeout(() => {
+      //  setNotifMessage(null);
+      //  setWarning(false);
+      //}, 5000);
     }
   };
 
@@ -102,7 +109,7 @@ const App = () => {
   if (user === null) {
     return (
       <>
-        <Notification warning={warning} message={notifMessage} />
+        <Notification />
         <LoginForm doLogin={doLogin} />
       </>
     );
@@ -111,7 +118,7 @@ const App = () => {
   return (
     <div>
       <h1>Bloglist app</h1>
-      <Notification warning={warning} message={notifMessage} />
+      <Notification />
       {user === null && <LoginForm setUser={setUser} />}
       <div>
         {!user.name || user.name === "" ? user.username : user.name} logged in.{" "}

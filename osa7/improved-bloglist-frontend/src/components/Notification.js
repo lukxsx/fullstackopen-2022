@@ -1,18 +1,21 @@
-const Notification = ({ message, warning }) => {
-  if (message !== null) {
+import { useSelector } from "react-redux";
+
+const Notification = () => {
+  const notif = useSelector((notif) => notif);
+  if (notif.message !== null) {
     return (
       <div
         className="notification"
         style={{
-          border: warning ? "solid red" : "solid green",
-          color: warning ? "red" : "green",
+          border: notif.warning ? "solid red" : "solid green",
+          color: notif.warning ? "red" : "green",
           borderRadius: "10px",
           paddingLeft: "10px",
           paddingTop: "1px",
           paddingBottom: "1px",
         }}
       >
-        <p>{message}</p>
+        <p>{notif.message}</p>
       </div>
     );
   }
