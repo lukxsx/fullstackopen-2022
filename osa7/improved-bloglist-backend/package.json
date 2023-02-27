@@ -8,6 +8,7 @@
     "start:test": "cross-env NODE_ENV=test node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
+    "prettier": "prettier --check .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "author": "",
@@ -26,7 +27,8 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^8.31.0",
-    "eslint-config-prettier": "8.6.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-jest": "^27.2.1",
     "eslint-plugin-react": "^7.32.2",
     "jest": "^29.3.0",
     "nodemon": "^2.0.20",
