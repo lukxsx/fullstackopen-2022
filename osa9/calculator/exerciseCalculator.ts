@@ -1,19 +1,19 @@
 import { isNotNumber } from "./utils";
 
 interface Result {
-  periodLength: number,
-  trainingDays: number,
-  success: boolean,
-  rating: number,
-  ratingDescription: string,
-  target: number,
-  average: number
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
 }
 
 const calculateExercises = (target: number, hours: number[]): Result => {
-  let res = {} as Result;
+  const res = {} as Result;
   res.periodLength = hours.length;
-  res.trainingDays = hours.filter(x => x !== 0).length;
+  res.trainingDays = hours.filter((x) => x !== 0).length;
   res.target = target;
   res.average = hours.reduce((a, b) => a + b, 0) / res.periodLength;
   if (res.average < target - 0.5) {
@@ -27,8 +27,8 @@ const calculateExercises = (target: number, hours: number[]): Result => {
     res.ratingDescription = "not too bad but could be better";
   }
   res.success = res.average >= res.target;
-  return res
-}
+  return res;
+};
 
 interface ExeValues {
   target: number;
@@ -43,7 +43,7 @@ const parseArguments = (args: string[]): ExeValues => {
       if (isNotNumber(args[i])) {
         throw new Error("Provided values were not numbers!");
       } else {
-        hours.push(Number(args[i]))
+        hours.push(Number(args[i]));
       }
     }
     return {
