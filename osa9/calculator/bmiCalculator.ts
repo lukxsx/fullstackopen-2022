@@ -16,7 +16,7 @@ const calculateBmi = (height: number, weight: number): string => {
     return "Obese (Class I)";
   } else if (bmi < 40) {
     return "Obese (Class II)";
-  } else if (bmi >= 40) {
+  } else {
     return "Obese (Class III)";
   }
 };
@@ -26,7 +26,7 @@ interface BMIValues {
   weight: number;
 }
 
-const parseArguments = (args: string[]): BMIValues => {
+const parseBMIArguments = (args: string[]): BMIValues => {
   if (args.length < 4) throw new Error("Not enough arguments");
   if (args.length > 4) throw new Error("Too many arguments");
 
@@ -41,7 +41,7 @@ const parseArguments = (args: string[]): BMIValues => {
 };
 
 try {
-  const { height, weight } = parseArguments(process.argv);
+  const { height, weight } = parseBMIArguments(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (error: unknown) {
   let errorMessage = "Something bad happened.";
