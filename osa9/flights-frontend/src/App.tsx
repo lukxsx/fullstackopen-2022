@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { DiaryEntry, Visibility, Weather } from "./types";
+import { DiaryEntry, NewDiaryEntry, Visibility, Weather } from "./types";
 import { getAllDiaries, createDiary } from "./diaryService";
+import axios from "axios";
 
 const EntryForm = ({
-  entries,
-  setEntries,
+  createDiaryEntry,
 }: {
-  entries: DiaryEntry[];
-  setEntries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
+  createDiaryEntry: (entry: NewDiaryEntry) => void;
 }) => {
   const [date, setDate] = useState("");
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Good);
@@ -15,9 +14,7 @@ const EntryForm = ({
   const [comment, setComment] = useState("");
   const handleCreateDiary = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    createDiary({ date, visibility, weather, comment }).then((data) =>
-      setEntries(entries.concat(data))
-    );
+    createDiaryEntry({ date, visibility, weather, comment });
   };
 
   return (
@@ -60,19 +57,41 @@ const EntryList = ({ entries }: { entries: DiaryEntry[] }) => {
   );
 };
 
+const ErrorMessage = ({ message }: { message: string }) => {
+  if (message !== "") return <p style={{ color: "red" }}>{message}</p>;
+  return <p></p>;
+};
+
 const App = () => {
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     getAllDiaries().then((data) => setDiaryEntries(data));
-  });
+  }, []);
+
+  const createDiaryEntry = async (entry: NewDiaryEntry) => {
+    createDiary(entry)
+      .then((data) => {
+        setDiaryEntries(diaryEntries.concat(data as DiaryEntry));
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          setMessage(error.response?.data);
+          setTimeout(() => setMessage(""), 3000);
+        } else {
+          console.error(error);
+        }
+      });
+  };
 
   return (
     <div>
       <h2>Diary entries</h2>
       <EntryList entries={diaryEntries} />
       <h2>Add new entry</h2>
-      <EntryForm entries={diaryEntries} setEntries={setDiaryEntries} />
+      <ErrorMessage message={message} />
+      <EntryForm createDiaryEntry={createDiaryEntry} />
     </div>
   );
 };
