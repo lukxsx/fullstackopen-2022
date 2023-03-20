@@ -1,6 +1,42 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { DiaryEntry } from "./types";
+import { DiaryEntry, Visibility, Weather } from "./types";
+import { getAllDiaries, createDiary } from "./diaryService";
+
+const EntryForm = ({
+  entries,
+  setEntries,
+}: {
+  entries: DiaryEntry[];
+  setEntries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
+}) => {
+  const [date, setDate] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>(Visibility.Good);
+  const [weather, setWeather] = useState<Weather>(Weather.Sunny);
+  const [comment, setComment] = useState("");
+  const handleCreateDiary = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    createDiary({ date, visibility, weather, comment }).then((data) =>
+      setEntries(entries.concat(data))
+    );
+  };
+
+  return (
+    <form onSubmit={handleCreateDiary}>
+      <label>Date:</label>
+      <input value={date} onChange={(e) => setDate(e.target.value)} />
+      <input
+        value={visibility}
+        onChange={(e) => setVisibility(e.target.value as Visibility)}
+      />
+      <input
+        value={weather}
+        onChange={(e) => setWeather(e.target.value as Weather)}
+      />
+      <input value={comment} onChange={(e) => setComment(e.target.value)} />
+      <button type="submit">add</button>
+    </form>
+  );
+};
 
 const Entry = ({ entry }: { entry: DiaryEntry }) => {
   return (
@@ -28,15 +64,15 @@ const App = () => {
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
 
   useEffect(() => {
-    axios
-      .get<DiaryEntry[]>("http://localhost:3001/api/diaries")
-      .then((response) => setDiaryEntries(response.data));
+    getAllDiaries().then((data) => setDiaryEntries(data));
   });
 
   return (
     <div>
       <h2>Diary entries</h2>
       <EntryList entries={diaryEntries} />
+      <h2>Add new entry</h2>
+      <EntryForm entries={diaryEntries} setEntries={setDiaryEntries} />
     </div>
   );
 };
